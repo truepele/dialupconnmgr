@@ -8,7 +8,9 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using DotRas;
+using NvtlApiWrapper;
 using SEAppBuilder.Common;
 
 namespace dialupconnmgr
@@ -34,6 +36,9 @@ namespace dialupconnmgr
         private string _currentUsername;
         private string _currentPassword;
         private string _lastconnectedUsername;
+        private double _signalStrength;
+
+        NvtlApiWrapper.ApiWrapper _nvtlApiWrapper = new ApiWrapper();
 
         public Watcher(string entryName = null)
             :base(true)
@@ -53,10 +58,15 @@ namespace dialupconnmgr
 
         private async void WatcherProc()
         {
+           
+
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
                 try
                 {
+
+                    HandleDevice(_nvtlApiWrapper);
+                    
                     InitCredentials();
 
                     if (!IsBusy && !string.IsNullOrEmpty(EntryName))
@@ -111,6 +121,58 @@ namespace dialupconnmgr
             }
         }
 
+
+        private bool tmp;
+        private string _deviceName;
+        private bool _isDeviceAttached;
+
+        private void HandleDevice(NvtlApiWrapper.ApiWrapper apiobj)
+        {
+            if (apiobj.IsApiLoaded() && !apiobj.IsInitialized())
+            {
+               // MessageBox.Show("if (apiobj.IsApiLoaded() && !apiobj.IsInitialized())");
+                if (!apiobj.Init())
+                {
+                   // MessageBox.Show("if (!apiobj.Init())");
+                    SignalStrength = 0;
+                    DeviceName = "";
+                    return;
+                }
+            }
+
+            var devicename = "";
+
+            if (apiobj.IsInitialized())
+            {
+                if (!apiobj.getIsDeviceAttached())
+                {
+                    var devices = apiobj.GetAvailableDevices();
+                    if (devices != null && devices.Any())
+                    {
+                        //MessageBox.Show(string.Format("{0} {1}", devices.Count(), devices.First().szPort));
+                        var device = devices.First();
+                        if (apiobj.AttachDevice(device) == 0)
+                        {
+                            DeviceName = device.szFriendlyName;
+                            IsDeviceAttached = true;
+                        }
+                    }
+                }
+
+                if (apiobj.getIsDeviceAttached())
+                {
+                    SignalStrength = (((double)apiobj.getSignalStrenght())/4)*100;
+                    //MessageBox.Show(SignalStrength.ToString());
+                }
+                else
+                {
+                    SignalStrength = 0;
+                    DeviceName = "";
+                    IsDeviceAttached = false;
+                }
+            }
+        }
+
         public async void Stop()
         {
             await _dialingSemaphor.WaitAsync();
@@ -128,6 +190,20 @@ namespace dialupconnmgr
                 _dialingSemaphor.Release();
                 IsBusy = false;
             }
+
+            try
+            {
+                if (_nvtlApiWrapper.IsApiLoaded() && _nvtlApiWrapper.IsInitialized())
+                {
+                    if (_nvtlApiWrapper.getIsDeviceAttached())
+                        _nvtlApiWrapper.DetachDevice();
+
+                    _nvtlApiWrapper.ReleaseSession();
+                }
+            }
+            catch
+            {
+            }
         }
 
         private void UpdateStatistic()
@@ -139,6 +215,24 @@ namespace dialupconnmgr
         {
             get { return _statistics; }
             private set { SetProperty(ref _statistics, value); }
+        }
+
+        public double SignalStrength
+        {
+            get { return _signalStrength; }
+            set { SetProperty(ref _signalStrength, value); }
+        }
+
+        public string DeviceName
+        {
+            get { return _deviceName; }
+            set { SetProperty(ref _deviceName, value); }
+        }
+
+        public bool IsDeviceAttached
+        {
+            get { return _isDeviceAttached; }
+            set { SetProperty(ref _isDeviceAttached, value); }
         }
 
         private void ClearStatistic()

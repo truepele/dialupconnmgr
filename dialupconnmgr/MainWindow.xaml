@@ -4,13 +4,13 @@
         xmlns:converters="clr-namespace:Converters"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="{Binding Watcher.CurrentUsername}" 
-        Height="320" Width="300"
+        Height="260" Width="300"
         ResizeMode="NoResize"
         Left="{Binding Left, Mode=TwoWay}"
         Top="{Binding Top, Mode=TwoWay}" Icon="Images/iconEDEG5.ico">
-    
-    <Grid  Margin="20">
-        
+
+    <Grid  Margin="10,5">
+
         <Grid.Resources>
             <converters:BoolInvertConverter x:Key="BoolInvertConverter"/>
             <converters:StringequalityToVisibilityConverter x:Key="StringequalityToVisibilityConverter"/>
@@ -18,14 +18,15 @@
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
             <converters:StringequalityToBoolConverter x:Key="StringequalityToBoolConverter"></converters:StringequalityToBoolConverter>
             <converters:BoolToVisibilityInvertConverter x:Key="BoolToVisibilityInvertConverter"></converters:BoolToVisibilityInvertConverter>
+            <converters:EmptyStringToCollapseConverter x:Key="EmptyStringToCollapseConverter"></converters:EmptyStringToCollapseConverter>
             <Style TargetType="TextBlock">
-                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontSize" Value="16"/>
             </Style>
-            
+
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="90"></RowDefinition>
+            <RowDefinition Height="65"></RowDefinition>
         </Grid.RowDefinitions>
 
 
@@ -38,23 +39,24 @@
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem IsEnabled="True" Header="Exit" Command="{Binding ExitCommand}">
-                </MenuItem>
+                    </MenuItem>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
-            </tb:TaskbarIcon>
-                    
-        
+        </tb:TaskbarIcon>
+
+
         <StackPanel Grid.Row="0" VerticalAlignment="Top" IsEnabled="{Binding Watcher.IsBusy, Converter={StaticResource BoolInvertConverter}}">
-            <ComboBox FontSize="18" Margin="0,3" ItemsSource="{Binding RasEntries}" SelectedItem="{Binding SelectedRasEntrie, Mode=TwoWay}" 
+            <ComboBox FontSize="16" Margin="0,3" ItemsSource="{Binding RasEntries}" SelectedItem="{Binding SelectedRasEntrie, Mode=TwoWay}" 
                       DisplayMemberPath="Name" HorizontalContentAlignment="Center"/>
-                     <!-- IsEnabled="{Binding Watcher.Disconnected, Converter={StaticResource StringequalityToBoolConverter}}"!-->
+            <!-- IsEnabled="{Binding Watcher.Disconnected, Converter={StaticResource StringequalityToBoolConverter}}"!-->
             <TextBlock Text ="{Binding Watcher.CurrentUsername}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
             <TextBlock Text ="{Binding Watcher.StateText}" HorizontalAlignment="Center"/>
             <TextBlock TextWrapping="Wrap" Foreground="Red"  HorizontalAlignment="Center"
-                       Text ="{Binding Watcher.ErrorText}"/>
+                       Text ="{Binding Watcher.ErrorText}"
+                       Visibility="{Binding Watcher.ErrorText, Converter={StaticResource EmptyStringToCollapseConverter}}"/>
 
             <StackPanel Orientation="Horizontal">
-                <Button Margin="10,3" FontSize="18" Command="{Binding ConnectDisconnectCommand}" HorizontalAlignment="Center">
+                <Button Margin="10,3" FontSize="16" Command="{Binding ConnectDisconnectCommand}" HorizontalAlignment="Center">
                     <Grid>
                         <TextBlock Text ="Connect" Padding="15,5"
                                     Visibility="{Binding Watcher.ConnectionState, Converter={StaticResource StringequalityToVisibilityInvertConverter}, ConverterParameter=Connected}"/>
@@ -69,6 +71,11 @@
                     </CheckBox.LayoutTransform>
                     Reconnect
                 </CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Watcher.DeviceName}"/>
+                <TextBlock Margin="30,0,0,0" Text="{Binding Watcher.SignalStrength}" Visibility="{Binding Watcher.IsDeviceAttached, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <TextBlock Text="%" Visibility="{Binding Watcher.IsDeviceAttached, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </StackPanel>
         </StackPanel>
 

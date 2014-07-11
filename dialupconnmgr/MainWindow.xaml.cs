@@ -33,9 +33,9 @@ namespace dialupconnmgr
             InitializeComponent();
 
             DataContext = _model = new MainVM();
-           Loaded += OnLoaded;
-           Closing += OnClosing;
-           _model.ShowHideCommand = new DelegateCommand(ShowHideCommand_Execute);
+            Loaded += OnLoaded;
+            Closing += OnClosing;
+            _model.ShowHideCommand = new DelegateCommand(ShowHideCommand_Execute);
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs routedEventArgs)

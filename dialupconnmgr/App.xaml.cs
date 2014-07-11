@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using NvtlApiWrapper;
 
 namespace dialupconnmgr
 {
@@ -14,9 +15,42 @@ namespace dialupconnmgr
     /// </summary>
     public partial class App : Application
     {
-        public async static void DispatcherInvokeAsync(Action action)
+        public App()
+        {
+            Startup += OnStartup;
+        }
+
+        public static async void DispatcherInvokeAsync(Action action)
         {
             Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Send);
         }
+
+        private void OnStartup(object sender, StartupEventArgs startupEventArgs)
+        {
+            //ApiWrapper api = new ApiWrapper();
+            //api.Init();
+
+            //if (api.IsApiLoaded())
+            //{
+            //    var devices = api.GetAvailableDevices();
+            //    //api.DeviceDataReceived += ApiOnDeviceDataReceived;
+            //    if (devices != null)
+            //    {
+            //        MessageBox.Show(string.Format("Found {0} devices", devices.Length));
+            //        var firstdevice = devices.FirstOrDefault();
+
+            //        if (firstdevice != null)
+            //        {
+            //            MessageBox.Show(string.Format("Device found: {0}", firstdevice.szFriendlyName));
+
+            //            var attachresult = api.AttachDevice(firstdevice);
+            //            MessageBox.Show(string.Format("attachresult: {0} ", attachresult));
+
+            //        }
+            //    }
+        }
+
+
     }
 }
+
