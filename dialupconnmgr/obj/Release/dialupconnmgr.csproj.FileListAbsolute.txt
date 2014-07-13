@@ -44,3 +44,5 @@ C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\MainWindow.baml
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\dialupconnmgr.g.resources
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\dialupconnmgr.Properties.Resources.resources
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\dialupconnmgr.csproj.GenerateResource.Cache
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Controls\SignalStrengthControl.baml
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Controls\SignalStrengthControl.g.cs

@@ -219,7 +219,8 @@ namespace dialupconnmgr
 
         public double SignalStrength
         {
-            get { return _signalStrength; }
+            get { return _signalStrength; 
+            }
             set { SetProperty(ref _signalStrength, value); }
         }
 

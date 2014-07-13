@@ -10,11 +10,11 @@ none
 false
 TRACE
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\App.xaml
-2526943272
+31067540058
 
-26-1167417543
+27-1917955498
 15445981563
-MainWindow.xaml;YesNoMessageBox.xaml;
+Controls\SignalStrengthControl.xaml;MainWindow.xaml;YesNoMessageBox.xaml;
 
 False
 

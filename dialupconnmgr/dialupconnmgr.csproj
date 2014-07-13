@@ -71,6 +71,9 @@
     <Compile Include="Common\ObservableCollectionEx.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\ProcessHelper.cs" />
+    <Compile Include="Controls\SignalStrengthControl.xaml.cs">
+      <DependentUpon>SignalStrengthControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BoolInvertConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityInvertConverter.cs" />
@@ -85,6 +88,10 @@
     <Compile Include="YesNoMessageBox.xaml.cs">
       <DependentUpon>YesNoMessageBox.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\SignalStrengthControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
