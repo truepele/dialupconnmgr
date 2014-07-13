@@ -23,12 +23,11 @@ namespace dialupconnmgr
 
         public MainVM()
         {
-            //Watcher.Statistics.BytesTransmitted
-
             RasPhoneBook pbk = new RasPhoneBook();
             pbk.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.User));
-            RasEntries = (from e in pbk.Entries.ToList()
-                where e.Device.DeviceType == RasDeviceType.Modem
+            RasEntries =
+            (from e in pbk.Entries.ToList()
+             where e.Device != null && e.Device.DeviceType == RasDeviceType.Modem
                 select e).ToList();
 
             Watcher = new Watcher();
