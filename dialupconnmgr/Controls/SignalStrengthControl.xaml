@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid HorizontalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10*"/>
             <ColumnDefinition Width="3*"/>
@@ -15,11 +15,25 @@
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="10*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
         
-        <Border Grid.Column="0" Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Green"/>
-        <Border Grid.Column="2" Height="50" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Green"/>
-        <Border Grid.Column="4" Height="75" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Green"/>
-        <Border Grid.Column="6" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="Gray"/>
+        
+        
+        <Border x:Name="Level1Border" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#ff008000"/>
+        <Border x:Name="Level2Border" Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#ff008000"/>
+        <Border x:Name="Level3Border" Grid.Column="4" Grid.Row="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#ff008000"/>
+        <Border x:Name="Level4Border" Grid.Column="6" Grid.Row="0" Grid.RowSpan="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#ff008000"/>
+        
+        <!--<Grid x:Name="xmarkRoot" Visibility ="{Binding IsDeviceAttached, Converter={StaticResource BoolToVisibilityInvertConverter}}" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+            <Line Stroke="#65FF0000" X1="0" Y1="0" X2="{Binding ElementName=xmarkRoot, Path=ActualWidth}" Y2="{Binding ElementName=xmarkRoot, Path=ActualHeight}" StrokeThickness="10"/>
+            <Line Stroke="#65FF0000" X2="0" Y1="0" X1="{Binding ElementName=xmarkRoot, Path=ActualWidth}" Y2="{Binding ElementName=xmarkRoot, Path=ActualHeight}" StrokeThickness="10"/>
+        </Grid>-->
+        
     </Grid>
     
 </UserControl>

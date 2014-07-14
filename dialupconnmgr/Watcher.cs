@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using DotRas;
 using NvtlApiWrapper;
 using SEAppBuilder.Common;
@@ -58,13 +59,10 @@ namespace dialupconnmgr
 
         private async void WatcherProc()
         {
-           
-
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
                 try
                 {
-
                     HandleDevice(_nvtlApiWrapper);
                     
                     InitCredentials();
@@ -125,6 +123,9 @@ namespace dialupconnmgr
         private bool tmp;
         private string _deviceName;
         private bool _isDeviceAttached;
+        private double _bytesTransmitted;
+        private double _bytesReceived;
+        private TimeSpan _connectionDuration;
 
         private void HandleDevice(NvtlApiWrapper.ApiWrapper apiobj)
         {
@@ -214,12 +215,40 @@ namespace dialupconnmgr
         public RasLinkStatistics Statistics
         {
             get { return _statistics; }
-            private set { SetProperty(ref _statistics, value); }
+            private set
+            {
+                if (SetProperty(ref _statistics, value))
+                {
+                    ConnectionDuration = _statistics.ConnectionDuration;
+                    BytesReceived = (double)Statistics.BytesReceived/(1024*1024);
+                    BytesTransmitted = (double)Statistics.BytesTransmitted / (1024 * 1024);
+                }
+            }
+        }
+
+        public double BytesTransmitted
+        {
+            get { return _bytesTransmitted; }
+            set { SetProperty(ref _bytesTransmitted, value); }
+        }
+
+        public double BytesReceived
+        {
+            get { return _bytesReceived; }
+            set { SetProperty(ref _bytesReceived, value); }
+        }
+
+        public TimeSpan ConnectionDuration
+        {
+            get { return _connectionDuration; }
+            set { SetProperty(ref _connectionDuration, value); }
         }
 
         public double SignalStrength
         {
-            get { return _signalStrength; 
+            get
+            {
+                return _signalStrength; 
             }
             set { SetProperty(ref _signalStrength, value); }
         }
@@ -232,7 +261,10 @@ namespace dialupconnmgr
 
         public bool IsDeviceAttached
         {
-            get { return _isDeviceAttached; }
+            get
+            {
+                return _isDeviceAttached; 
+            }
             set { SetProperty(ref _isDeviceAttached, value); }
         }
 

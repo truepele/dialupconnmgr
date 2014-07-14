@@ -15,14 +15,18 @@ namespace dialupconnmgr
     /// </summary>
     public partial class App : Application
     {
+        private static Window _mainWindow;
+
         public App()
         {
-            Startup += OnStartup;
+            this.InitializeComponent();
+            _mainWindow = new MainWindow();
+            _mainWindow.Show();
         }
 
-        public static async void DispatcherInvokeAsync(Action action)
+        public static async Task DispatcherInvokeAsync(Action action)
         {
-            Dispatcher.CurrentDispatcher.BeginInvoke(action, DispatcherPriority.Send);
+            await _mainWindow.Dispatcher.InvokeAsync(action, DispatcherPriority.Send);
         }
 
         private void OnStartup(object sender, StartupEventArgs startupEventArgs)

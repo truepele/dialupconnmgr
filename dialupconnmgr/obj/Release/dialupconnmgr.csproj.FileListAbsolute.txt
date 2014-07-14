@@ -31,8 +31,6 @@ C:\Projects\pele\dialupconnmgr\dialupconnmgr\bin\Release\Hardcodet.Wpf.TaskbarNo
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\bin\Release\DotRas.xml
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\bin\Release\Hardcodet.Wpf.TaskbarNotification.pdb
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\bin\Release\Hardcodet.Wpf.TaskbarNotification.xml
-C:\Projects\pele\dialupconnmgr\dialupconnmgr\bin\Release\NvtlApiWrapper.pdb
-C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\dialupconnmgr.csprojResolveAssemblyReference.cache
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\YesNoMessageBox.baml
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\MainWindow.g.cs
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\YesNoMessageBox.g.cs
@@ -46,3 +44,8 @@ C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\dialupconnmgr.Propertie
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\dialupconnmgr.csproj.GenerateResource.Cache
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Controls\SignalStrengthControl.baml
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Controls\SignalStrengthControl.g.cs
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\bin\Release\DotRas.dll
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Controls\TestControl.baml
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Controls\TestControl.g.cs
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\App.baml
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Resources\Converters.baml

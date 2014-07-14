@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:Converters">
+
+    <converters:BoolInvertConverter x:Key="BoolInvertConverter"/>
+    <converters:StringequalityToVisibilityConverter x:Key="StringequalityToVisibilityConverter"/>
+    <converters:StringequalityToVisibilityInvertConverter x:Key="StringequalityToVisibilityInvertConverter"/>
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
+    <converters:StringequalityToBoolConverter x:Key="StringequalityToBoolConverter"></converters:StringequalityToBoolConverter>
+    <converters:BoolToVisibilityInvertConverter x:Key="BoolToVisibilityInvertConverter"></converters:BoolToVisibilityInvertConverter>
+    <converters:EmptyStringToCollapseConverter x:Key="EmptyStringToCollapseConverter"></converters:EmptyStringToCollapseConverter>
+    <converters:TimeFormatConverter x:Key="TimeFormatConverter"></converters:TimeFormatConverter>
+    <converters:DoubleToStringConverter x:Key="DoubleToStringConverter"></converters:DoubleToStringConverter>
+    
+
+</ResourceDictionary>

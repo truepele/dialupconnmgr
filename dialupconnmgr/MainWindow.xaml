@@ -8,20 +8,15 @@
         Height="285" Width="300"
         ResizeMode="NoResize"
         Left="{Binding Left, Mode=TwoWay}"
-        Top="{Binding Top, Mode=TwoWay}" Icon="Images/iconEDEG5.ico">
+        Top="{Binding Top, Mode=TwoWay}" Icon="{Binding AppIcon}" Background="#202020" Foreground="WhiteSmoke">
 
     <Grid  Margin="10,5">
 
         <Grid.Resources>
-            <converters:BoolInvertConverter x:Key="BoolInvertConverter"/>
-            <converters:StringequalityToVisibilityConverter x:Key="StringequalityToVisibilityConverter"/>
-            <converters:StringequalityToVisibilityInvertConverter x:Key="StringequalityToVisibilityInvertConverter"/>
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
-            <converters:StringequalityToBoolConverter x:Key="StringequalityToBoolConverter"></converters:StringequalityToBoolConverter>
-            <converters:BoolToVisibilityInvertConverter x:Key="BoolToVisibilityInvertConverter"></converters:BoolToVisibilityInvertConverter>
-            <converters:EmptyStringToCollapseConverter x:Key="EmptyStringToCollapseConverter"></converters:EmptyStringToCollapseConverter>
             <Style TargetType="TextBlock">
-                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="Foreground" Value="WhiteSmoke"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
             </Style>
 
         </Grid.Resources>
@@ -35,7 +30,7 @@
         <tb:TaskbarIcon x:Name="myNotifyIcon"
                     Visibility="Visible"
                     ToolTipText="{Binding Watcher.StateText}"
-                    IconSource="/Images/iconEDEG5.ico"
+                    IconSource="{Binding AppIcon}"
                     DoubleClickCommand="{Binding ShowHideCommand}">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
@@ -50,10 +45,7 @@
             <ComboBox FontSize="16" Margin="0,3" ItemsSource="{Binding RasEntries}" SelectedItem="{Binding SelectedRasEntrie, Mode=TwoWay}" 
                       DisplayMemberPath="Name" HorizontalContentAlignment="Center"/>
             <!-- IsEnabled="{Binding Watcher.Disconnected, Converter={StaticResource StringequalityToBoolConverter}}"!-->
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text ="{Binding Watcher.CurrentUsername}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                <TextBlock Margin="20,0,0,0" Text ="{Binding Watcher.StateText}" HorizontalAlignment="Center"/>
-            </StackPanel>
+            <TextBlock Text ="{Binding Watcher.CurrentUsername}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
             <TextBlock TextWrapping="Wrap" Foreground="Red"  HorizontalAlignment="Center"
                        Text ="{Binding Watcher.ErrorText}"
                        Visibility="{Binding Watcher.ErrorText, Converter={StaticResource EmptyStringToCollapseConverter}}"/>
@@ -65,16 +57,17 @@
                     <ColumnDefinition Width="10*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                    <TextBlock Margin="0,0,0,15" Text ="{Binding Watcher.StateText}" HorizontalAlignment="Left"/>
                     <Button Command="{Binding ConnectDisconnectCommand}" HorizontalAlignment="Center">
                         <Grid>
-                            <TextBlock Width="120" FontSize="18" FontWeight="SemiBold" Text ="Connect" Padding="15,5"
+                            <TextBlock Width="120" FontSize="18" FontWeight="SemiBold" Text ="Connect" Padding="15,5"  Background="Gray"
                                         Visibility="{Binding Watcher.ConnectionState, Converter={StaticResource StringequalityToVisibilityInvertConverter}, ConverterParameter=Connected}"/>
 
                             <TextBlock Width="120" FontSize="18" FontWeight="SemiBold" Text ="Disconnect" Background="OrangeRed" Padding="15,5"
                                         Visibility="{Binding Watcher.ConnectionState, Converter={StaticResource StringequalityToVisibilityConverter}, ConverterParameter=Connected}"/>
                         </Grid>
                     </Button>
-                    <CheckBox Margin="0,10,0,-3" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" IsChecked="{Binding Watcher.IsKeepConnection}">
+                    <CheckBox Margin="0,10,0,0" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" IsChecked="{Binding Watcher.IsKeepConnection}" Foreground="WhiteSmoke">
                     
                         <CheckBox.LayoutTransform>
                             <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
@@ -82,7 +75,9 @@
                         Reconnect
                     </CheckBox>
                 </StackPanel>
-                <controls:SignalStrengthControl Grid.Column="2" Height="100" HorizontalAlignment="Stretch"/>
+                <controls:SignalStrengthControl SignalStrength="{Binding Watcher.SignalStrength, Mode=TwoWay}" 
+                                                IsDeviceAttached="{Binding Watcher.IsDeviceAttached, Mode=TwoWay}" 
+                                                Grid.Column="2" Height="100" HorizontalAlignment="Stretch"/>
             </Grid>
             <!--<StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Watcher.DeviceName}"/>
@@ -95,16 +90,20 @@
             <ProgressBar Margin="0" VerticalAlignment="Top" Height="10" IsIndeterminate="True" Visibility="{Binding Watcher.IsBusy, Converter={StaticResource BoolToVisibilityConverter}}"></ProgressBar>
             <StackPanel Visibility="{Binding Watcher.ConnectionState, Converter={StaticResource StringequalityToVisibilityConverter}, ConverterParameter=Connected}">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Duration: "/>
-                    <TextBlock Text="{Binding  Watcher.Statistics.ConnectionDuration}"/>
+                    <Image Source="Resources/Images/duration.png"/>
+                    <TextBlock Margin="8,0,0,0" Text="{Binding  Watcher.ConnectionDuration, Converter={StaticResource TimeFormatConverter}}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="BytesReceived: "/>
-                    <TextBlock Text="{Binding  Watcher.Statistics.BytesReceived}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="BytesTransmitted: "/>
-                    <TextBlock Text="{Binding  Watcher.Statistics.BytesTransmitted}"/>
+                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                    <StackPanel Margin="0,0,20,0" Orientation="Horizontal">
+                        <Image Source="Resources/Images/received.png"/>
+                        <TextBlock Margin="8,0,0,0" Text="{Binding  Watcher.BytesReceived, Converter={StaticResource DoubleToStringConverter}}"/>
+                        <TextBlock Text=" MB"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Resources/Images/transmitted.png"/>
+                        <TextBlock Margin="8,0,0,0" Text="{Binding  Watcher.BytesTransmitted, Converter={StaticResource DoubleToStringConverter}}"/>
+                        <TextBlock Text=" MB"/>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
