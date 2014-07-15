@@ -48,3 +48,4 @@ C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Controls\TestControl.ba
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Controls\TestControl.g.cs
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\App.baml
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\Resources\Converters.baml
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Release\dialupconnmgr.csprojResolveAssemblyReference.cache
