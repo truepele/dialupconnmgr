@@ -23,7 +23,7 @@ namespace dialupconnmgr
         private RasEntry _selectedRasEntrie;
         private ImageSource _appIcon;
         public DelegateCommand ConnectDisconnectCommand { get; private set; }
-        public DelegateCommand ShowHideCommand { get; set; }
+        public DelegateCommand ShowCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
 
         public MainVM()

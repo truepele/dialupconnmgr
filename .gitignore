@@ -1,6 +1,3 @@
 *.suo
 dialupconnmgr/bin/
 dialupconnmgr/obj/
-dialupconnmgr/obj/Release/MainWindow.g.i.cs
-dialupconnmgr/obj/Release/dialupconnmgr_MarkupCompile.i.cache
-dialupconnmgr/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache

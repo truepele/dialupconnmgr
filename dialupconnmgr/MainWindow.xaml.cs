@@ -35,7 +35,7 @@ namespace dialupconnmgr
             DataContext = _model = new MainVM();
             Loaded += OnLoaded;
             Closing += OnClosing;
-            _model.ShowHideCommand = new DelegateCommand(ShowHideCommand_Execute);
+            _model.ShowCommand = new DelegateCommand(ShowCommand_Execute);
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -45,16 +45,10 @@ namespace dialupconnmgr
             await Task.Factory.StartNew(() => _model.Watcher.Start());
         }
 
-        private void ShowHideCommand_Execute(object o)
+        private void ShowCommand_Execute(object o)
         {
-            if (this.Visibility == Visibility.Hidden)
-            {
-                Show();
-            }
-            else
-            {
-                Hide();
-            }
+            Show();
+            Activate();
         }
 
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs)

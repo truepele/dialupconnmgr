@@ -31,7 +31,7 @@
                     Visibility="Visible"
                     ToolTipText="{Binding Watcher.StateText}"
                     IconSource="{Binding AppIcon}"
-                    DoubleClickCommand="{Binding ShowHideCommand}">
+                    DoubleClickCommand="{Binding ShowCommand}">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem IsEnabled="True" Header="Exit" Command="{Binding ExitCommand}">
