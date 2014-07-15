@@ -45,7 +45,7 @@
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
     <Reference Include="NvtlApiWrapper">
-      <HintPath>..\..\..\NvtlApiWrapper\Release\NvtlApiWrapper.dll</HintPath>
+      <HintPath>..\..\NvtlApiWrapper\Release\NvtlApiWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
