@@ -37,7 +37,10 @@
     <ApplicationIcon>signal4.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotRas, Version=1.3.5166.33435, Culture=neutral, PublicKeyToken=b378f04384b7892a, processorArchitecture=MSIL" />
+    <Reference Include="DotRas, Version=1.3.5166.33435, Culture=neutral, PublicKeyToken=b378f04384b7892a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\DotRas.dll</HintPath>
+    </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>

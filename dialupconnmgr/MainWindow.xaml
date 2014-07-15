@@ -50,14 +50,14 @@
                        Text ="{Binding Watcher.ErrorText}"
                        Visibility="{Binding Watcher.ErrorText, Converter={StaticResource EmptyStringToCollapseConverter}}"/>
 
-            <Grid>
+            <Grid Height="100">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="10*"/>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="10*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                    <TextBlock Margin="0,0,0,15" Text ="{Binding Watcher.StateText}" HorizontalAlignment="Left"/>
+                <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Left">
+                    <TextBlock Margin="0,0,0,8" Text ="{Binding Watcher.StateText}" HorizontalAlignment="Left" />
                     <Button Command="{Binding ConnectDisconnectCommand}" HorizontalAlignment="Center">
                         <Grid>
                             <TextBlock Width="120" FontSize="18" FontWeight="SemiBold" Text ="Connect" Padding="15,5"  Background="Gray"
@@ -67,7 +67,7 @@
                                         Visibility="{Binding Watcher.ConnectionState, Converter={StaticResource StringequalityToVisibilityConverter}, ConverterParameter=Connected}"/>
                         </Grid>
                     </Button>
-                    <CheckBox Margin="0,10,0,0" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" IsChecked="{Binding Watcher.IsKeepConnection}" Foreground="WhiteSmoke">
+                    <CheckBox Margin="0,8,0,0" FontSize="13" FontWeight="SemiBold" IsChecked="{Binding Watcher.IsKeepConnection}" Foreground="WhiteSmoke">
                     
                         <CheckBox.LayoutTransform>
                             <ScaleTransform ScaleX="1.4" ScaleY="1.4" />
@@ -77,7 +77,7 @@
                 </StackPanel>
                 <controls:SignalStrengthControl SignalStrength="{Binding Watcher.SignalStrength, Mode=TwoWay}" 
                                                 IsDeviceAttached="{Binding Watcher.IsDeviceAttached, Mode=TwoWay}" 
-                                                Grid.Column="2" Height="100" HorizontalAlignment="Stretch"/>
+                                                Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </Grid>
             <!--<StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Watcher.DeviceName}"/>
@@ -86,23 +86,21 @@
             </StackPanel>-->
         </StackPanel>
 
-        <StackPanel Grid.Row="1" VerticalAlignment="Bottom" >
+        <StackPanel Grid.Row="1">
             <ProgressBar Margin="0" VerticalAlignment="Top" Height="10" IsIndeterminate="True" Visibility="{Binding Watcher.IsBusy, Converter={StaticResource BoolToVisibilityConverter}}"></ProgressBar>
             <StackPanel Visibility="{Binding Watcher.ConnectionState, Converter={StaticResource StringequalityToVisibilityConverter}, ConverterParameter=Connected}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Resources/Images/duration.png"/>
-                    <TextBlock Margin="8,0,0,0" Text="{Binding  Watcher.ConnectionDuration, Converter={StaticResource TimeFormatConverter}}"/>
+                    <TextBlock Margin="4,0,0,0" Text="{Binding  Watcher.ConnectionDuration, Converter={StaticResource TimeFormatConverter}}"/>
                 </StackPanel>
                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                    <StackPanel Margin="0,0,20,0" Orientation="Horizontal">
+                    <StackPanel Margin="0,0,10,0" Orientation="Horizontal">
                         <Image Source="Resources/Images/received.png"/>
-                        <TextBlock Margin="8,0,0,0" Text="{Binding  Watcher.BytesReceived, Converter={StaticResource DoubleToStringConverter}}"/>
-                        <TextBlock Text=" MB"/>
+                        <TextBlock Margin="4,0,0,0" Text="{Binding  Watcher.BytesReceived, Converter={StaticResource DoubleToStringConverter}}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="Resources/Images/transmitted.png"/>
-                        <TextBlock Margin="8,0,0,0" Text="{Binding  Watcher.BytesTransmitted, Converter={StaticResource DoubleToStringConverter}}"/>
-                        <TextBlock Text=" MB"/>
+                        <TextBlock Margin="4,0,0,0" Text="{Binding  Watcher.BytesTransmitted, Converter={StaticResource DoubleToStringConverter}}"/>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

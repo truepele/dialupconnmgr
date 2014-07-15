@@ -66,6 +66,7 @@ namespace dialupconnmgr
         private void ExitCommand_Executed(object o)
         {
             Watcher.Stop();
+            Watcher.PropertyChanged -= WatcherOnPropertyChanged;
             App.Current.Shutdown();
         }
 
@@ -99,7 +100,6 @@ namespace dialupconnmgr
                 else if (Watcher.SignalStrength > 50  && Watcher.SignalStrength <= 75)
                 {
                     AppIcon = new BitmapImage(new Uri(@"pack://application:,,,/Resources/Images/signal3.ico"));
-                    //MessageBox.Show(Watcher.SignalStrength.ToString());
                 }
                 else if (Watcher.SignalStrength > 75)
                 {

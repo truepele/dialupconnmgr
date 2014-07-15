@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Projects\pele\dialupconnmgr2\dialupconnmgr\dialupconnmgr\obj\Debug\
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\obj\Debug\
 dialupconnmgr
 none
 false
 DEBUG;TRACE
-C:\Projects\pele\dialupconnmgr2\dialupconnmgr\dialupconnmgr\App.xaml
-2526943272
+C:\Projects\pele\dialupconnmgr\dialupconnmgr\App.xaml
+5-472543867
 
-30668051292
-15-1343162539
-MainWindow.xaml;YesNoMessageBox.xaml;
+34127576510
+171790659373
+Controls\SignalStrengthControl.xaml;Controls\TestControl.xaml;MainWindow.xaml;Resources\Converters.xaml;YesNoMessageBox.xaml;
 
-False
+True
 

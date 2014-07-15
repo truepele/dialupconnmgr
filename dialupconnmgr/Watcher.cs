@@ -18,7 +18,7 @@ namespace dialupconnmgr
 {
     class Watcher : BindableBase
     {
-        private DotRas.RasConnectionWatcher _connwatcher;
+        private RasConnectionWatcher _connwatcher;
         RasDialer _dialer = new RasDialer();
         private RasConnection _conn;
         private int _watchingInterval = 1000;
@@ -38,8 +38,14 @@ namespace dialupconnmgr
         private string _currentPassword;
         private string _lastconnectedUsername;
         private double _signalStrength;
-
-        NvtlApiWrapper.ApiWrapper _nvtlApiWrapper = new ApiWrapper();
+        private bool tmp;
+        private string _deviceName;
+        private bool _isDeviceAttached;
+        private double _bytesTransmitted;
+        private double _bytesReceived;
+        private TimeSpan _connectionDuration;
+        private Timer _watchingTimer;
+        ApiWrapper _nvtlApiWrapper = new ApiWrapper();
 
         public Watcher(string entryName = null)
             :base(true)
@@ -53,88 +59,71 @@ namespace dialupconnmgr
         public async void Start()
         {
             InitWatcher();
-            _cancellationTokenSource = new CancellationTokenSource();
-            Task.Factory.StartNew(WatcherProc);
+            _watchingTimer = new Timer(o => Task.Factory.StartNew(WatcherProc), null, 0, _watchingInterval);
         }
 
         private async void WatcherProc()
         {
-            while (!_cancellationTokenSource.IsCancellationRequested)
+            try
             {
-                try
+                HandleDevice(_nvtlApiWrapper);
+
+                InitCredentials();
+
+                if (!IsBusy && !string.IsNullOrEmpty(EntryName))
                 {
-                    HandleDevice(_nvtlApiWrapper);
-                    
-                    InitCredentials();
-
-                    if (!IsBusy && !string.IsNullOrEmpty(EntryName))
+                    if (_conn != null)
                     {
-                        if (_conn != null)
+                        var connstatus = _conn.GetConnectionStatus();
+                        if (connstatus.ConnectionState == RasConnectionState.Disconnected)
                         {
-                            var connstatus = _conn.GetConnectionStatus();
-                            if (connstatus.ConnectionState == RasConnectionState.Disconnected)
-                            {
-                                if (IsKeepConnection)
-                                    Connect();
-                            }
-                            else
-                            {
-                                ConnectionState = connstatus.ConnectionState;
-                                UpdateStatistic();
-
-                                if (_lastconnectedUsername != CurrentUsername)
-                                {
-                                    await Disconnect();
-                                    Connect();
-                                    _lastconnectedUsername = CurrentUsername;
-                                }
-                            }
+                            if (IsKeepConnection)
+                                Connect();
                         }
                         else
                         {
-                            ConnectionState = RasConnectionState.Disconnected;
-                            InitWatcher();
+                            ConnectionState = connstatus.ConnectionState;
+                            UpdateStatistic();
 
-                            if (_conn == null)
+                            if (_lastconnectedUsername != CurrentUsername)
                             {
-                                if (IsKeepConnection)
-                                    Connect();
+                                await Disconnect();
+                                Connect();
+                                _lastconnectedUsername = CurrentUsername;
                             }
-                            else
-                            {
-                                ConnectionState = _conn.GetConnectionStatus().ConnectionState;
-                            }
-
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                   //Debugger.Break();
-                    InitWatcher();
-                }
+                    else
+                    {
+                        ConnectionState = RasConnectionState.Disconnected;
+                        InitWatcher();
 
+                        if (_conn == null)
+                        {
+                            if (IsKeepConnection)
+                                Connect();
+                        }
+                        else
+                        {
+                            ConnectionState = _conn.GetConnectionStatus().ConnectionState;
+                        }
 
-                Thread.Sleep(_watchingInterval);
+                    }
+                }
             }
+            catch (Exception e)
+            {
+                InitWatcher();
+            }
+
         }
-
-
-        private bool tmp;
-        private string _deviceName;
-        private bool _isDeviceAttached;
-        private double _bytesTransmitted;
-        private double _bytesReceived;
-        private TimeSpan _connectionDuration;
 
         private void HandleDevice(NvtlApiWrapper.ApiWrapper apiobj)
         {
             if (apiobj.IsApiLoaded() && !apiobj.IsInitialized())
             {
-               // MessageBox.Show("if (apiobj.IsApiLoaded() && !apiobj.IsInitialized())");
                 if (!apiobj.Init())
                 {
-                   // MessageBox.Show("if (!apiobj.Init())");
                     SignalStrength = 0;
                     DeviceName = "";
                     return;
@@ -150,7 +139,6 @@ namespace dialupconnmgr
                     var devices = apiobj.GetAvailableDevices();
                     if (devices != null && devices.Any())
                     {
-                        //MessageBox.Show(string.Format("{0} {1}", devices.Count(), devices.First().szPort));
                         var device = devices.First();
                         if (apiobj.AttachDevice(device) == 0)
                         {
@@ -162,8 +150,7 @@ namespace dialupconnmgr
 
                 if (apiobj.getIsDeviceAttached())
                 {
-                    SignalStrength = (((double)apiobj.getSignalStrenght())/4)*100;
-                    //MessageBox.Show(SignalStrength.ToString());
+                    SignalStrength = (((double)apiobj.getSignalStrenght())/4)*100;                    
                 }
                 else
                 {
@@ -178,19 +165,9 @@ namespace dialupconnmgr
         {
             await _dialingSemaphor.WaitAsync();
             IsBusy = true;
-            try
-            {
-                _cancellationTokenSource.Cancel();
-            }
-            catch (Exception e)
-            {
-                ErrorText = e.ToString();
-            }
-            finally
-            {
-                _dialingSemaphor.Release();
-                IsBusy = false;
-            }
+
+            _dialingSemaphor.Release();
+            IsBusy = false;
 
             try
             {
@@ -205,6 +182,8 @@ namespace dialupconnmgr
             catch
             {
             }
+
+            _watchingTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         private void UpdateStatistic()
@@ -219,7 +198,8 @@ namespace dialupconnmgr
             {
                 if (SetProperty(ref _statistics, value))
                 {
-                    ConnectionDuration = _statistics.ConnectionDuration;
+                    if (Statistics != null)
+                    ConnectionDuration = Statistics.ConnectionDuration;
                     BytesReceived = (double)Statistics.BytesReceived/(1024*1024);
                     BytesTransmitted = (double)Statistics.BytesTransmitted / (1024 * 1024);
                 }
@@ -250,7 +230,7 @@ namespace dialupconnmgr
             {
                 return _signalStrength; 
             }
-            set { SetProperty(ref _signalStrength, value); }
+            set { SetPropertySync(ref _signalStrength, value); }
         }
 
         public string DeviceName
@@ -265,7 +245,7 @@ namespace dialupconnmgr
             {
                 return _isDeviceAttached; 
             }
-            set { SetProperty(ref _isDeviceAttached, value); }
+            set { SetPropertySync(ref _isDeviceAttached, value); }
         }
 
         private void ClearStatistic()
@@ -362,7 +342,10 @@ namespace dialupconnmgr
             get { return _stateText; }
             private set
             {
-                SetPropertySync(ref _stateText, value);
+                if (SetPropertySync(ref _stateText, value) && value == "Connected")
+                {
+                    ErrorText = "";
+                }
             }
         }
 
