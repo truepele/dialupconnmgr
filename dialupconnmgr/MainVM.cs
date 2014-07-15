@@ -32,7 +32,7 @@ namespace dialupconnmgr
             pbk.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.User));
             RasEntries =
             (from e in pbk.Entries.ToList()
-             where e.Device != null && e.Device.DeviceType == RasDeviceType.Modem
+             //where e.Device != null && e.Device.DeviceType == RasDeviceType.Modem
                 select e).ToList();
 
             Watcher = new Watcher();

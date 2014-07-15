@@ -5,7 +5,7 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:controls="clr-namespace:dialupconnmgr.Controls"
         Title="{Binding Watcher.CurrentUsername}" 
-        Height="285" Width="300"
+        Height="300" Width="300"
         ResizeMode="NoResize"
         Left="{Binding Left, Mode=TwoWay}"
         Top="{Binding Top, Mode=TwoWay}" Icon="{Binding AppIcon}" Background="#202020" Foreground="WhiteSmoke">
@@ -93,19 +93,28 @@
                     <Image Source="Resources/Images/duration.png"/>
                     <TextBlock Margin="4,0,0,0" Text="{Binding  Watcher.ConnectionDuration, Converter={StaticResource TimeFormatConverter}}"/>
                 </StackPanel>
+                
+                <StackPanel Margin="0,0,10,0" Orientation="Horizontal">
+                    <Image Source="Resources/Images/received.png"/>
+                    <TextBlock Margin="4,0,0,0" Text="{Binding  Watcher.BytesReceived, Converter={StaticResource DoubleToStringConverter}}"/>
+                    <TextBlock Margin="4,0,0,1" FontSize="14" FontWeight="Normal" Text="MB" VerticalAlignment="Bottom"/>
+                    <TextBlock Margin="10,0,0,0" Text="{Binding  Watcher.DownSpeed, Converter={StaticResource DoubleToStringConverter}}"/>
+                    <TextBlock Margin="4,0,0,1" FontSize="14" FontWeight="Normal" Text="Mb/s" VerticalAlignment="Bottom"/>
+                </StackPanel>
                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                    <StackPanel Margin="0,0,10,0" Orientation="Horizontal">
-                        <Image Source="Resources/Images/received.png"/>
-                        <TextBlock Margin="4,0,0,0" Text="{Binding  Watcher.BytesReceived, Converter={StaticResource DoubleToStringConverter}}"/>
-                    </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="Resources/Images/transmitted.png"/>
                         <TextBlock Margin="4,0,0,0" Text="{Binding  Watcher.BytesTransmitted, Converter={StaticResource DoubleToStringConverter}}"/>
+                        <TextBlock Margin="4,0,0,1" FontSize="14" FontWeight="Normal" Text="MB" VerticalAlignment="Bottom"/>
+                        <TextBlock Margin="10,0,0,0" Text="{Binding  Watcher.UpSpeed, Converter={StaticResource DoubleToStringConverter}}"/>
+                        <TextBlock Margin="4,0,0,1" FontSize="14" FontWeight="Normal" Text="Mb/s" VerticalAlignment="Bottom"/>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
-       
+
+
+
 
     </Grid>
 </Window>

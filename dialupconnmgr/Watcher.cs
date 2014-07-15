@@ -16,13 +16,13 @@ using SEAppBuilder.Common;
 
 namespace dialupconnmgr
 {
-    class Watcher : BindableBase
+    internal class Watcher : BindableBase
     {
         private RasConnectionWatcher _connwatcher;
-        RasDialer _dialer = new RasDialer();
+        private RasDialer _dialer = new RasDialer();
         private RasConnection _conn;
         private int _watchingInterval = 1000;
-        SemaphoreSlim _dialingSemaphor = new SemaphoreSlim(1);
+        private SemaphoreSlim _dialingSemaphor = new SemaphoreSlim(1);
         private string _errorText;
         private string _stateText;
         private RasLinkStatistics _statistics;
@@ -32,7 +32,7 @@ namespace dialupconnmgr
         private string _daypassword = "IT";
         private string _nigthusername = "UNLIM_NIGHT";
         private string _nightpassword = "UNLIM_NIGHT";
-        private DateTime _nightbegintime = DateTime.MinValue.Date + new TimeSpan(0, 1,0);
+        private DateTime _nightbegintime = DateTime.MinValue.Date + new TimeSpan(0, 1, 0);
         private DateTime _nightendtime = DateTime.MinValue.Date + new TimeSpan(8, 0, 0);
         private string _currentUsername;
         private string _currentPassword;
@@ -45,10 +45,14 @@ namespace dialupconnmgr
         private double _bytesReceived;
         private TimeSpan _connectionDuration;
         private Timer _watchingTimer;
-        ApiWrapper _nvtlApiWrapper = new ApiWrapper();
+        private ApiWrapper _nvtlApiWrapper = new ApiWrapper();
+        private const int _speedcalQueueCount = 5;
+        private Queue<StatisticsEntry> _speedcalcQueue = new Queue<StatisticsEntry>(_speedcalQueueCount);
+        private double _upSpeed;
+        private double _downSpeed;
 
         public Watcher(string entryName = null)
-            :base(true)
+            : base(true)
         {
             if (entryName != null)
                 EntryName = entryName;
@@ -150,7 +154,7 @@ namespace dialupconnmgr
 
                 if (apiobj.getIsDeviceAttached())
                 {
-                    SignalStrength = (((double)apiobj.getSignalStrenght())/4)*100;                    
+                    SignalStrength = (((double) apiobj.getSignalStrenght())/4)*100;
                 }
                 else
                 {
@@ -198,10 +202,18 @@ namespace dialupconnmgr
             {
                 if (SetProperty(ref _statistics, value))
                 {
-                    if (Statistics != null)
-                    ConnectionDuration = Statistics.ConnectionDuration;
-                    BytesReceived = (double)Statistics.BytesReceived/(1024*1024);
-                    BytesTransmitted = (double)Statistics.BytesTransmitted / (1024 * 1024);
+                    if (value != null)
+                    {
+                        ConnectionDuration = value.ConnectionDuration;
+                        BytesReceived = (double) value.BytesReceived/(1024*1024);
+                        BytesTransmitted = (double) value.BytesTransmitted/(1024*1024);
+                        CalcSpeed(new StatisticsEntry()
+                        {
+                            Duration = ConnectionDuration,
+                            BytesReceived = value.BytesReceived,
+                            BytesTransmitted = value.BytesTransmitted
+                        });
+                    }
                 }
             }
         }
@@ -226,10 +238,7 @@ namespace dialupconnmgr
 
         public double SignalStrength
         {
-            get
-            {
-                return _signalStrength; 
-            }
+            get { return _signalStrength; }
             set { SetPropertySync(ref _signalStrength, value); }
         }
 
@@ -241,10 +250,7 @@ namespace dialupconnmgr
 
         public bool IsDeviceAttached
         {
-            get
-            {
-                return _isDeviceAttached; 
-            }
+            get { return _isDeviceAttached; }
             set { SetPropertySync(ref _isDeviceAttached, value); }
         }
 
@@ -271,7 +277,7 @@ namespace dialupconnmgr
                 _dialer.StateChanged += DialerOnStateChanged;
                 _dialer.Error -= DialerOnError;
                 _dialer.Error += DialerOnError;
-                
+
                 _dialer.DialAsync();
             }
             catch (Exception ex)
@@ -302,7 +308,7 @@ namespace dialupconnmgr
                         await Task.Factory.StartNew(_conn.HangUp);
                         ConnectionState = RasConnectionState.Disconnected;
                     }
-                    
+
                 }
                 catch (Exception e)
                 {
@@ -324,10 +330,7 @@ namespace dialupconnmgr
         public string ErrorText
         {
             get { return _errorText; }
-            set
-            {
-                SetProperty(ref _errorText, value);
-            }
+            set { SetProperty(ref _errorText, value); }
         }
 
         private void DialerOnStateChanged(object sender, StateChangedEventArgs stateChangedEventArgs)
@@ -352,10 +355,7 @@ namespace dialupconnmgr
         [UserScopedSetting]
         public string EntryName
         {
-            get
-            {
-                return GetSettingProperty<string>();
-            }
+            get { return GetSettingProperty<string>(); }
             set
             {
                 if (SetSettingProperty(value))
@@ -460,7 +460,8 @@ namespace dialupconnmgr
         {
             return (from c in RasConnection.GetActiveConnections()
                 where
-                    (string.IsNullOrEmpty(name) || c.EntryName == name) && (checkismodem == false || c.Device.DeviceType == RasDeviceType.Modem)
+                    (string.IsNullOrEmpty(name) || c.EntryName == name) &&
+                    (checkismodem == false || c.Device.DeviceType == RasDeviceType.Modem)
                 select c).FirstOrDefault();
         }
 
@@ -481,6 +482,42 @@ namespace dialupconnmgr
                     StateText = value.ToString();
                 }
             }
+        }
+
+        private void CalcSpeed(StatisticsEntry statisticsEntry)
+        {
+            var beginningItem = new StatisticsEntry();
+            if (_speedcalcQueue.Count == _speedcalQueueCount - 1)
+            {
+                beginningItem = _speedcalcQueue.Dequeue();
+            }
+            else if (_speedcalcQueue.Count > 0)
+            {
+                beginningItem = _speedcalcQueue.Peek();
+            }
+
+            if (beginningItem.Duration.TotalMilliseconds > 0)
+            {
+                var interval = statisticsEntry.Duration - beginningItem.Duration;
+                DownSpeed = ((statisticsEntry.BytesReceived - beginningItem.BytesReceived)/
+                             (interval.TotalSeconds*1024*1024))*8;
+                UpSpeed = ((statisticsEntry.BytesTransmitted - beginningItem.BytesTransmitted)/
+                           (interval.TotalSeconds*1024*1024))*8;
+            }
+
+            _speedcalcQueue.Enqueue(statisticsEntry);
+        }
+
+        public double UpSpeed
+        {
+            get { return _upSpeed; }
+            set { SetProperty(ref _upSpeed, value); }
+        }
+
+        public double DownSpeed
+        {
+            get { return _downSpeed; }
+            set { SetProperty(ref _downSpeed, value); }
         }
     }
 }
