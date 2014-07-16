@@ -42,7 +42,7 @@ namespace dialupconnmgr
         {
             Loaded -= OnLoaded;
 
-            await Task.Factory.StartNew(() => _model.Watcher.Start());
+            await Task.Factory.StartNew(() => _model.StartWatcher());
         }
 
         private void ShowCommand_Execute(object o)

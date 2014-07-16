@@ -95,7 +95,6 @@
     <Compile Include="Converters\TimeFormatConverter.cs" />
     <Compile Include="Converters\ZeroToCollapsedConverter.cs" />
     <Compile Include="StatisticsEntry.cs" />
-    <Compile Include="Watcher.cs" />
     <Compile Include="YesNoMessageBox.xaml.cs">
       <DependentUpon>YesNoMessageBox.xaml</DependentUpon>
     </Compile>
