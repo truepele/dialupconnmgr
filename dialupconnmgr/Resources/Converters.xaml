@@ -3,14 +3,21 @@
                     xmlns:converters="clr-namespace:Converters">
 
     <converters:BoolInvertConverter x:Key="BoolInvertConverter"/>
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
+    <converters:ValueConverterGroup x:Key="BoolToVisibilityInvertConverter">
+        <converters:BoolInvertConverter/>
+        <converters:BoolToVisibilityConverter/>
+    </converters:ValueConverterGroup>
+    
     <converters:StringequalityToVisibilityConverter x:Key="StringequalityToVisibilityConverter"/>
     <converters:StringequalityToVisibilityInvertConverter x:Key="StringequalityToVisibilityInvertConverter"/>
-    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
     <converters:StringequalityToBoolConverter x:Key="StringequalityToBoolConverter"></converters:StringequalityToBoolConverter>
-    <converters:BoolToVisibilityInvertConverter x:Key="BoolToVisibilityInvertConverter"></converters:BoolToVisibilityInvertConverter>
     <converters:EmptyStringToCollapseConverter x:Key="EmptyStringToCollapseConverter"></converters:EmptyStringToCollapseConverter>
     <converters:TimeFormatConverter x:Key="TimeFormatConverter"></converters:TimeFormatConverter>
     <converters:DoubleToStringConverter x:Key="DoubleToStringConverter"></converters:DoubleToStringConverter>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
+    <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"></converters:DoubleMultiplierConverter>
+    
     
 
 </ResourceDictionary>

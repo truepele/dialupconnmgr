@@ -98,17 +98,17 @@
                 
                 <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
                     <Image Source="Resources/Images/received.png"/>
-                    <TextBlock Margin="4,0,0,0" Text="{Binding  BytesReceived, Converter={StaticResource DoubleToStringConverter}}"/>
+                    <TextBlock Margin="4,0,0,0" Text="{Binding  BytesReceived, Converter={StaticResource DoubleMultiplierConverter}, StringFormat='{StaticResource FormatStringDoubleStatisctics}'}"/>
                     <TextBlock Margin="4,0,0,1" FontSize="14" FontWeight="Normal" Text="MB" VerticalAlignment="Bottom"/>
-                    <TextBlock Margin="10,0,0,0" Text="{Binding  DownSpeed, Converter={StaticResource DoubleToStringConverter}}"/>
+                    <TextBlock Margin="10,0,0,0" Text="{Binding  DownSpeed, Converter={StaticResource DoubleMultiplierConverter}, StringFormat='{StaticResource FormatStringDoubleStatisctics}'}"/>
                     <TextBlock Margin="4,0,0,1" FontSize="14" FontWeight="Normal" Text="Mb/s" VerticalAlignment="Bottom"/>
                 </StackPanel>
                 <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="Resources/Images/transmitted.png"/>
-                        <TextBlock Margin="4,0,0,0" Text="{Binding  BytesTransmitted, Converter={StaticResource DoubleToStringConverter}}"/>
+                        <TextBlock Margin="4,0,0,0" Text="{Binding  BytesTransmitted, Converter={StaticResource DoubleMultiplierConverter}, StringFormat='{StaticResource FormatStringDoubleStatisctics}'}"/>
                         <TextBlock Margin="4,0,0,1" FontSize="14" FontWeight="Normal" Text="MB" VerticalAlignment="Bottom"/>
-                        <TextBlock Margin="10,0,0,0" Text="{Binding  UpSpeed, Converter={StaticResource DoubleToStringConverter}}"/>
+                        <TextBlock Margin="10,0,0,0" Text="{Binding  UpSpeed, Converter={StaticResource DoubleMultiplierConverter}, StringFormat='{StaticResource FormatStringDoubleStatisctics}'}"/>
                         <TextBlock Margin="4,0,0,1" FontSize="14" FontWeight="Normal" Text="Mb/s" VerticalAlignment="Bottom"/>
                     </StackPanel>
                 </StackPanel>

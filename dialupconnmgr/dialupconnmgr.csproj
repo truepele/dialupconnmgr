@@ -93,8 +93,12 @@
     <Compile Include="Converters\StringequalityToVisibilityConverter.cs" />
     <Compile Include="Converters\StringequalityToVisibilityInvertConverter.cs" />
     <Compile Include="Converters\TimeFormatConverter.cs" />
+    <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="Converters\ZeroToCollapsedConverter.cs" />
+    <Compile Include="Converters\DoubleMultiplierConverter.cs" />
     <Compile Include="StatisticsEntry.cs" />
+    <Compile Include="StatisticsLogEntry.cs" />
+    <Compile Include="StatisticsLogger.cs" />
     <Compile Include="YesNoMessageBox.xaml.cs">
       <DependentUpon>YesNoMessageBox.xaml</DependentUpon>
     </Compile>
@@ -120,6 +124,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resources\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\DefaultTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

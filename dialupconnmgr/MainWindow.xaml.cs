@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -41,10 +42,12 @@ namespace dialupconnmgr
         private async void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             Loaded -= OnLoaded;
-
+            
+            //Thread.CurrentThread.CurrentCulture.NumberFormat = new NumberFormatInfo(){NumberGroupSeparator = " "};
             await Task.Factory.StartNew(() => _model.StartWatcher());
         }
 
+        
         private void ShowCommand_Execute(object o)
         {
             Show();

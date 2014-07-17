@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using DotRas;
@@ -58,6 +59,7 @@ namespace dialupconnmgr
         private List<RasEntry> _rasEntries;
         private RasEntry _selectedRasEntrie;
         private ImageSource _appIcon;
+        StatisticsLogger _logger = new StatisticsLogger();
 
         #endregion
 
@@ -75,7 +77,7 @@ namespace dialupconnmgr
             pbk.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.User));
             RasEntries =
             (from e in pbk.Entries.ToList()
-             where e.Device != null && e.Device.DeviceType == RasDeviceType.Modem
+             //where e.Device != null && e.Device.DeviceType == RasDeviceType.Modem
                 select e).ToList();
 
             InitCredentials();
@@ -135,6 +137,12 @@ namespace dialupconnmgr
 
             _dialingSemaphor.Release();
             IsBusy = false;
+        }
+
+        public async override void Save()
+        {
+            await _logger.Save();
+            base.Save();
         }
 
         #endregion
@@ -300,18 +308,24 @@ namespace dialupconnmgr
 
         private void UpdateStatistic()
         {
-            Statistics = _conn.GetConnectionStatistics();
-            if (Statistics != null)
+            if (_conn != null)
             {
-                ConnectionDuration = Statistics.ConnectionDuration;
-                BytesReceived = (double)Statistics.BytesReceived / (1024 * 1024);
-                BytesTransmitted = (double)Statistics.BytesTransmitted / (1024 * 1024);
-                CalcSpeed(new StatisticsEntry
+                var fixationTime = DateTime.Now;
+                Statistics = _conn.GetConnectionStatistics();
+                if (Statistics != null)
                 {
-                    Duration = ConnectionDuration,
-                    BytesReceived = Statistics.BytesReceived,
-                    BytesTransmitted = Statistics.BytesTransmitted
-                });
+                    ConnectionDuration = Statistics.ConnectionDuration;
+                    BytesReceived = Statistics.BytesReceived;
+                    BytesTransmitted = Statistics.BytesTransmitted;
+                    CalcSpeed(new StatisticsEntry
+                    {
+                        Duration = ConnectionDuration,
+                        BytesReceived = Statistics.BytesReceived,
+                        BytesTransmitted = Statistics.BytesTransmitted
+                    });
+
+                    _logger.Log(fixationTime, _conn.Handle.GetHashCode(), CurrentUsername, EntryName, Statistics, UpSpeed, DownSpeed);
+                }
             }
         }
 
@@ -436,9 +450,9 @@ namespace dialupconnmgr
             {
                 var interval = statisticsEntry.Duration - beginningItem.Duration;
                 DownSpeed = ((statisticsEntry.BytesReceived - beginningItem.BytesReceived) /
-                             (interval.TotalSeconds * 1024 * 1024)) * 8;
+                             (interval.TotalSeconds)) * 8;
                 UpSpeed = ((statisticsEntry.BytesTransmitted - beginningItem.BytesTransmitted) /
-                           (interval.TotalSeconds * 1024 * 1024)) * 8;
+                           (interval.TotalSeconds)) * 8;
             }
 
             _speedcalcQueue.Enqueue(statisticsEntry);
