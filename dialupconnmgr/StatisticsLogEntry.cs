@@ -10,12 +10,17 @@ using DotRas;
 namespace dialupconnmgr
 {
 
-    class StatisticsLogEntry
+    public class StatisticsLogEntry
     {
         private ulong _speedupCount = 0;
         private ulong _speeddownCount = 0;
         private double _sumUpspeed;
         private double _sumDownspeed;
+
+        public StatisticsLogEntry()
+        {
+            ConnectionDuration = new TimeSpan();
+        }
 
         public StatisticsLogEntry(int rashandleHash, string username, string phonebookentryName)
         {
@@ -84,13 +89,29 @@ namespace dialupconnmgr
         [XmlAttribute]
         public int RashandleHash { get; set; }
         [XmlAttribute]
-        private DateTime LastFixationTime { get; set; }
+        public DateTime LastFixationTime { get; set; }
         [XmlAttribute]
         public DateTime FirstFixationTime { get; set; }
         [XmlAttribute]
         private DateTime ConnectedTime { get; set; }
-        [XmlAttribute]
+
+        [XmlIgnore]
         public TimeSpan ConnectionDuration { get; set; }
+
+        [XmlAttribute(AttributeName = "duration")]
+        public long ConnectionDurationSeconds
+        {
+            get { return (long)ConnectionDuration.TotalSeconds; }
+            set
+            {
+                ConnectionDuration = new TimeSpan(TimeSpan.TicksPerSecond * value);
+            }
+        }
+
+
+
+        //[XmlAttribute(Type=typeof(string))]public 
+
         [XmlAttribute]
         public long BytesReceived { get; set; }
         [XmlAttribute]

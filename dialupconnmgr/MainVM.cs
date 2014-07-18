@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -59,7 +60,7 @@ namespace dialupconnmgr
         private List<RasEntry> _rasEntries;
         private RasEntry _selectedRasEntrie;
         private ImageSource _appIcon;
-        StatisticsLogger _logger = new StatisticsLogger();
+        StatisticsLogger _logger;
 
         #endregion
 
@@ -141,7 +142,10 @@ namespace dialupconnmgr
 
         public async override void Save()
         {
-            await _logger.Save();
+            if (_logger != null)
+            {
+                await _logger.Save();
+            }
             base.Save();
         }
 
@@ -324,6 +328,19 @@ namespace dialupconnmgr
                         BytesTransmitted = Statistics.BytesTransmitted
                     });
 
+                    Exception e;
+                    if (_logger == null)
+                    {
+                        try
+                        {
+                            _logger = new StatisticsLogger(fixationTime);
+                        }
+                        catch (Exception ee)
+                        {
+                            Debugger.Break();
+                        }
+                        
+                    }
                     _logger.Log(fixationTime, _conn.Handle.GetHashCode(), CurrentUsername, EntryName, Statistics, UpSpeed, DownSpeed);
                 }
             }
