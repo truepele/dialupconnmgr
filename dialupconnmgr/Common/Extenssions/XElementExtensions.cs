@@ -1,43 +1,46 @@
 ﻿using System;
 using System.Xml.Linq;
 
-public static class XElementExtensions
+namespace Common.Extenssions
 {
-    public static string GetElementValue(this XElement e, XName elementName)
+    public static class XElementExtensions
     {
-        var element = e.Element(elementName);
-        if (element == null)
+        public static string GetElementValue(this XElement e, XName elementName)
         {
-            return String.Empty;
+            var element = e.Element(elementName);
+            if (element == null)
+            {
+                return String.Empty;
+            }
+            return element.Value;
         }
-        return element.Value;
-    }
 
-    public static string GetAttributeValue(this XElement e, XName attributeName)
-    {
-        var attribute = e.Attribute(attributeName);
-        if (attribute == null)
+        public static string GetAttributeValue(this XElement e, XName attributeName)
         {
-            return String.Empty;
+            var attribute = e.Attribute(attributeName);
+            if (attribute == null)
+            {
+                return String.Empty;
+            }
+            return attribute.Value;
         }
-        return attribute.Value;
+
+        //public static void SetElementValue(this XElement e, XName elementName, object value)
+        //{
+        //    var element = e.Element(elementName);
+        //    if (element != null)
+        //    {
+        //        element.SetValue(value);
+        //    }
+        //}
+
+        //public static void SetAttributeValue(this XElement e, XName attributeName, object value)
+        //{
+        //    var attribute = e.Attribute(attributeName);
+        //    if (attribute != null)
+        //    {
+        //        attribute.SetValue(value);
+        //    }
+        //}
     }
-
-    //public static void SetElementValue(this XElement e, XName elementName, object value)
-    //{
-    //    var element = e.Element(elementName);
-    //    if (element != null)
-    //    {
-    //        element.SetValue(value);
-    //    }
-    //}
-
-    //public static void SetAttributeValue(this XElement e, XName attributeName, object value)
-    //{
-    //    var attribute = e.Attribute(attributeName);
-    //    if (attribute != null)
-    //    {
-    //        attribute.SetValue(value);
-    //    }
-    //}
 }

@@ -12,18 +12,21 @@ namespace dialupconnmgr
 
     public class StatisticsLogEntry
     {
-        private ulong _speedupCount = 0;
-        private ulong _speeddownCount = 0;
         private double _sumUpspeed;
         private double _sumDownspeed;
 
         public StatisticsLogEntry()
         {
+            AggregatedCount = 1;
+            SpeedupPointcount = 0;
+            SpeeddownPointcount = 0;
             ConnectionDuration = new TimeSpan();
         }
 
         public StatisticsLogEntry(int rashandleHash, string username, string phonebookentryName)
         {
+            SpeedupPointcount = 0;
+            SpeeddownPointcount = 0;
             RashandleHash = rashandleHash;
             UserName = username;
             PhoneBookEntryName = phonebookentryName;
@@ -51,9 +54,9 @@ namespace dialupconnmgr
                 if (MaxUpSpeed < upspeed)
                     MaxUpSpeed = upspeed;
 
-                _sumUpspeed += upspeed;
-                _speedupCount++;
-                AvgUpSpeed = _sumUpspeed/_speedupCount;
+                _sumUpspeed = _sumUpspeed + upspeed;
+                SpeedupPointcount++;
+                AvgUpSpeed = _sumUpspeed / SpeedupPointcount;
             }
 
             if (downspeed > 0)
@@ -62,8 +65,8 @@ namespace dialupconnmgr
                     MaxDownSpeed = downspeed;
 
                 _sumDownspeed += downspeed;
-                _speeddownCount++;
-                AvgDownSpeed = _sumDownspeed / _speeddownCount;
+                SpeeddownPointcount++;
+                AvgDownSpeed = _sumDownspeed / SpeeddownPointcount;
             }
         }
 
@@ -71,6 +74,12 @@ namespace dialupconnmgr
         {
             Update(fixationTime, statistics);
             UpdateSpeed(upspeed, downspeed);
+        }
+
+        public void SetDisconnected(DateTime fixationTime)
+        {
+            LastFixationTime = fixationTime;
+            DisconnectTime = ConnectedTime + ConnectionDuration;
         }
 
         private void Update(DateTime fixationTime, RasLinkStatistics statistics)
@@ -86,14 +95,43 @@ namespace dialupconnmgr
                 FirstFixationTime = fixationTime;
         }
 
-        [XmlAttribute]
+        public static StatisticsLogEntry operator +(StatisticsLogEntry e1, StatisticsLogEntry e2)
+        {
+            var less = e1.ConnectedTime < e2.ConnectedTime ? e1 : e2;
+            var larger = e1.ConnectedTime < e2.ConnectedTime ? e2 : e1;
+
+            return new StatisticsLogEntry()
+            {
+                AvgDownSpeed = (e1.SpeeddownPointcount * e1.AvgDownSpeed + e2.SpeeddownPointcount * e2.AvgDownSpeed) / (e1.SpeeddownPointcount + e2.SpeeddownPointcount),
+                AvgUpSpeed =
+                (e1.SpeedupPointcount * e1.AvgUpSpeed + e2.SpeedupPointcount * e2.AvgUpSpeed) / (e1.SpeedupPointcount + e2.SpeedupPointcount),
+                BytesReceived = e1.BytesReceived+e2.BytesReceived,
+                BytesTransmitted = e1.BytesTransmitted + e2.BytesTransmitted,
+                ConnectedTime = less.ConnectedTime,
+                ConnectionDuration = e1.ConnectionDuration + e2.ConnectionDuration,
+                FirstFixationTime = less.FirstFixationTime,
+                LastFixationTime = larger.LastFixationTime,
+                LastDownSpeed = larger.LastDownSpeed,
+                LastUpSpeed = larger.LastUpSpeed,
+                SpeeddownPointcount = e1.SpeeddownPointcount+e2.SpeeddownPointcount,
+                SpeedupPointcount = e1.SpeedupPointcount + e2.SpeedupPointcount,
+                MaxDownSpeed = Math.Max(e1.MaxDownSpeed, e2.MaxDownSpeed),
+                MaxUpSpeed = Math.Max(e1.MaxUpSpeed, e2.MaxUpSpeed),
+                AggregatedCount = e1.AggregatedCount+e2.AggregatedCount
+            };
+        }
+
+        [XmlAttribute("Id")]
         public int RashandleHash { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("lastfix")]
         public DateTime LastFixationTime { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("firstfix")]
         public DateTime FirstFixationTime { get; set; }
-        [XmlAttribute]
-        private DateTime ConnectedTime { get; set; }
+
+        [XmlAttribute("connectime")]
+        public DateTime ConnectedTime { get; set; }
 
         [XmlIgnore]
         public TimeSpan ConnectionDuration { get; set; }
@@ -107,30 +145,47 @@ namespace dialupconnmgr
                 ConnectionDuration = new TimeSpan(TimeSpan.TicksPerSecond * value);
             }
         }
-
-
-
-        //[XmlAttribute(Type=typeof(string))]public 
-
-        [XmlAttribute]
+        
+        [XmlAttribute("recieved")]
         public long BytesReceived { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("transmitted")]
         public long BytesTransmitted { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("lastUSpeed")]
         public double LastUpSpeed { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("lastDSpeed")]
         public double LastDownSpeed { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("avgUSpeed")]
         public double AvgUpSpeed { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("avgDSpeed")]
         public double AvgDownSpeed { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("MaxUSpeed")]
         public double MaxUpSpeed { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("MaxDSpeed")]
         public double MaxDownSpeed { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("UserName")]
         public string UserName { get; set; }
-        [XmlAttribute]
+
+        [XmlAttribute("EntryName")]
         public string PhoneBookEntryName { get; set; }
+
+        [XmlAttribute("USpeedCount")]
+        public ulong SpeedupPointcount { get; set; }
+
+        [XmlAttribute("DSpeedCount")]
+        public ulong SpeeddownPointcount { get; set; }
+
+        [XmlAttribute("DisconnectTime")]
+        public DateTime DisconnectTime { get; set; }
+
+        [XmlIgnore]
+        public int AggregatedCount { get; set; }
     }
 }

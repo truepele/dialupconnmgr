@@ -72,6 +72,7 @@
     <Compile Include="Common\ChackableBindableBase.cs" />
     <Compile Include="Common\DelagateCommand.cs" />
     <Compile Include="Common\Extenssions\ColorExtenssions.cs" />
+    <Compile Include="Common\Extenssions\StatisticsLogEntryExtenssion.cs" />
     <Compile Include="Common\Extenssions\XElementExtensions.cs" />
     <Compile Include="Common\ObservableCollectionEx.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Converters\ZeroToCollapsedConverter.cs" />
     <Compile Include="Converters\DoubleMultiplierConverter.cs" />
     <Compile Include="StatisticsEntry.cs" />
+    <Compile Include="StatisticsLogBase.cs" />
     <Compile Include="StatisticsLogEntry.cs" />
     <Compile Include="StatisticsLogger.cs" />
     <Compile Include="YesNoMessageBox.xaml.cs">

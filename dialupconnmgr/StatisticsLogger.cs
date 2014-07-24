@@ -10,78 +10,41 @@ using System.Threading.Tasks;
 using System.Windows.Navigation;
 using System.Xml;
 using System.Xml.Serialization;
+using Common.Extenssions;
 using DotRas;
 
 namespace dialupconnmgr
 {
-    public class StatisticsLogger
+    public class StatisticsLogger : StatisticsLogBase
     {
-        private const int SaveInterval = 10;
-        private List<StatisticsLogEntry> _entriesList = new List<StatisticsLogEntry>();
-        SemaphoreSlim _semaphor = new SemaphoreSlim(1,1);
-        private string _path;
-        private string _directoryPath;
+        private const int SaveInterval = 5;
         private DateTime _lastSavedFixationTime;
+        private string _path;
 
-        private XmlSerializer _serializer;
-        private DateTime _lastWriteTime;
-
-        public StatisticsLogger()
+        public StatisticsLogger() : base()
         {
         }
 
-        public StatisticsLogger(DateTime date, string directoryPath = null)
+        public StatisticsLogger(DateTime date, string directoryPath = null):base(directoryPath)
         {
-            _serializer = new XmlSerializer(typeof(StatisticsLogger));
+            _path = ConstructPath(date, _directoryPath);
+            _entriesList = ReadEntries(date);
+        }
 
-            _directoryPath = !string.IsNullOrEmpty(directoryPath)?System.IO.Path.GetDirectoryName(directoryPath)
-                :Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
-
-            _path = ConstructPath(date);
-            if (System.IO.File.Exists(_path))
+        public async Task LogDisconnection(DateTime fixationTime)
+        {
+            await _semaphor.WaitAsync();
+            try
             {
-                using (XmlReader reader = new XmlTextReader(_path))
+                if (_entriesList.Any())
                 {
-                    try
-                    {
-                        var origin = _serializer.Deserialize(reader) as StatisticsLogger;
-                        if (origin != null)
-                        {
-                            _entriesList = new List<StatisticsLogEntry>(origin.EntriesList);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                    }
+                    _entriesList.Last().SetDisconnected(fixationTime);
+                    Serialize();
                 }
             }
-            
-        }
-
-        [XmlElement(ElementName = "Entry")]
-        public List<StatisticsLogEntry> EntriesList
-        {
-            get { return _entriesList; }
-            private set { _entriesList = value; }
-        }
-
-        private string ConstructPath(DateTime fixationTime)
-        {
-
-            return System.IO.Path.Combine(_directoryPath, string.Format("log_{0}.xml", DateTime.Now.ToString("yyyy-MM-dd")));
-        }
-
-        private void Init(DateTime fixationTime)
-        {
-            var path = ConstructPath(fixationTime);
-            if (string.IsNullOrEmpty(_path) || string.Compare(path, _path, StringComparison.OrdinalIgnoreCase) != 0)
+            finally
             {
-                _path = path;
-                if (!Directory.Exists(_directoryPath))
-                {
-                    Directory.CreateDirectory(_directoryPath);
-                }
-                _entriesList.Clear();
+                _semaphor.Release();
             }
         }
 
@@ -141,6 +104,20 @@ namespace dialupconnmgr
             using (var writer = new XmlTextWriter(_path, Encoding.UTF8))
             {
                 _serializer.Serialize(writer, this);
+            }
+        }
+
+        protected void Init(DateTime fixationTime)
+        {
+            var path = ConstructPath(fixationTime, _directoryPath);
+            if (string.IsNullOrEmpty(_path) || string.Compare(path, _path, StringComparison.OrdinalIgnoreCase) != 0)
+            {
+                _path = path;
+                if (!Directory.Exists(_directoryPath))
+                {
+                    Directory.CreateDirectory(_directoryPath);
+                }
+                _entriesList.Clear();
             }
         }
     }

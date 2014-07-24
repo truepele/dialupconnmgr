@@ -61,6 +61,7 @@ namespace dialupconnmgr
         private RasEntry _selectedRasEntrie;
         private ImageSource _appIcon;
         StatisticsLogger _logger;
+        private RasConnectionState _lastConnState;
 
         #endregion
 
@@ -228,6 +229,8 @@ namespace dialupconnmgr
                     if (_conn != null)
                     {
                         var connstatus = _conn.GetConnectionStatus();
+                        ConnectionState = connstatus.ConnectionState;
+
                         if (connstatus.ConnectionState == RasConnectionState.Disconnected)
                         {
                             if (IsKeepConnection)
@@ -235,7 +238,6 @@ namespace dialupconnmgr
                         }
                         else
                         {
-                            ConnectionState = connstatus.ConnectionState;
                             UpdateStatistic();
 
                             if (_lastconnectedUsername != CurrentUsername)
@@ -645,6 +647,10 @@ namespace dialupconnmgr
                     if (value == RasConnectionState.Connected)
                     {
                         ErrorText = string.Empty;
+                    }
+                    else if(value == RasConnectionState.Disconnected)
+                    {
+                        _logger.LogDisconnection(DateTime.Now);
                     }
                 }
             }
