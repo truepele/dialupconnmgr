@@ -2,15 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using SEAppBuilder.Common;
 
 namespace dialupconnmgr
 {
     public class StatisticsLogBase
     {
         protected List<StatisticsLogEntry> _entriesList = new List<StatisticsLogEntry>();
-        protected SemaphoreSlim _semaphor = new SemaphoreSlim(1,1);
+        protected static SemaphoreSlim _semaphor = new SemaphoreSlim(1, 1);//, "loggingSemaphore");
         protected string _directoryPath;
         protected XmlSerializer _serializer;
 
@@ -25,29 +27,37 @@ namespace dialupconnmgr
                : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
         }
 
-        protected List<StatisticsLogEntry> ReadEntries(DateTime date)
+        protected async Task<List<StatisticsLogEntry>> ReadEntries(DateTime date)
         {
-            var path = ConstructPath(date, _directoryPath);
             List<StatisticsLogEntry> entries = null;
+            await _semaphor.WaitAsync();
 
-            if (File.Exists(path))
+            try
             {
-                using (XmlReader reader = new XmlTextReader(path))
+                var path = ConstructPath(date, _directoryPath);
+                if (File.Exists(path))
                 {
-                    try
+                    using (XmlReader reader = new XmlTextReader(path))
                     {
-                        var origin = _serializer.Deserialize(reader) as StatisticsLogger;
-                        if (origin != null)
+                        try
                         {
-                            entries = new List<StatisticsLogEntry>(origin.EntriesList);
+                            var origin = _serializer.Deserialize(reader) as StatisticsLogger;
+                            if (origin != null)
+                            {
+                                entries = new List<StatisticsLogEntry>(origin.EntriesList);
+                            }
                         }
-                    }
-                    catch (Exception)
-                    {
+                        catch (Exception)
+                        {
+                        }
                     }
                 }
             }
-
+            finally
+            {
+                _semaphor.Release();
+            }
+            
             return entries;
         }
 
@@ -55,7 +65,7 @@ namespace dialupconnmgr
         public List<StatisticsLogEntry> EntriesList
         {
             get { return _entriesList; }
-            private set { _entriesList = value; }
+            set { _entriesList = value; }
         }
 
         protected string ConstructPath(DateTime fixationTime, string directoryPath = null)

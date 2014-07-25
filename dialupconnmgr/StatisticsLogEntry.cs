@@ -100,7 +100,7 @@ namespace dialupconnmgr
             var less = e1.ConnectedTime < e2.ConnectedTime ? e1 : e2;
             var larger = e1.ConnectedTime < e2.ConnectedTime ? e2 : e1;
 
-            return new StatisticsLogEntry()
+            var result = new StatisticsLogEntry()
             {
                 AvgDownSpeed = (e1.SpeeddownPointcount * e1.AvgDownSpeed + e2.SpeeddownPointcount * e2.AvgDownSpeed) / (e1.SpeeddownPointcount + e2.SpeeddownPointcount),
                 AvgUpSpeed =
@@ -119,6 +119,8 @@ namespace dialupconnmgr
                 MaxUpSpeed = Math.Max(e1.MaxUpSpeed, e2.MaxUpSpeed),
                 AggregatedCount = e1.AggregatedCount+e2.AggregatedCount
             };
+
+            return result;
         }
 
         [XmlAttribute("Id")]
@@ -187,5 +189,8 @@ namespace dialupconnmgr
 
         [XmlIgnore]
         public int AggregatedCount { get; set; }
+
+        [XmlIgnore]
+        public List<StatisticsLogEntry> Childs { get; set; }
     }
 }

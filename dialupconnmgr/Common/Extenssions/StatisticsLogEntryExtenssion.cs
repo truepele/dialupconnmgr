@@ -11,8 +11,10 @@ namespace Common.Extenssions
     {
         public static StatisticsLogEntry Sum(this IEnumerable<StatisticsLogEntry> source)
         {
-            var ordered = source.OrderBy(entry => entry.FirstFixationTime);
-            return ordered.Aggregate((e1, e2) => e1 + e2);
+            var ordered = source.OrderBy(entry => entry.FirstFixationTime).ToList();
+            var result = ordered.Aggregate((e1, e2) => e1 + e2);
+            result.Childs = ordered;
+            return result;
         }
     }
 }

@@ -77,6 +77,10 @@
     <Compile Include="Common\ObservableCollectionEx.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\ProcessHelper.cs" />
+    <Compile Include="ConnectionHistory.cs" />
+    <Compile Include="ConnectionHistory.xaml.cs">
+      <DependentUpon>ConnectionHistory.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SignalStrengthControl.xaml.cs">
       <DependentUpon>SignalStrengthControl.xaml</DependentUpon>
     </Compile>
@@ -104,6 +108,10 @@
     <Compile Include="YesNoMessageBox.xaml.cs">
       <DependentUpon>YesNoMessageBox.xaml</DependentUpon>
     </Compile>
+    <Page Include="ConnectionHistory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\SignalStrengthControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

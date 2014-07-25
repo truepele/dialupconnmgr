@@ -18,7 +18,7 @@ using wv;
 namespace dialupconnmgr
 {
     
-    class MainVM:BindableBase
+    public class MainVM:BindableBase
     {
         #region Constants
 
@@ -61,7 +61,10 @@ namespace dialupconnmgr
         private RasEntry _selectedRasEntrie;
         private ImageSource _appIcon;
         StatisticsLogger _logger;
+        private ConnectionHistory _history;
         private RasConnectionState _lastConnState;
+        private DateTime _historyStartDate;
+        private DateTime _historyEndDate;
 
         #endregion
 
@@ -70,6 +73,8 @@ namespace dialupconnmgr
         public DelegateCommand ConnectDisconnectCommand { get; private set; }
         public DelegateCommand ShowCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
+        public DelegateCommand ShowHistoryCommand { get; set; }
+        public DelegateCommand LoadHistoryCommand { get; set; }
 
         #endregion
 
@@ -96,7 +101,8 @@ namespace dialupconnmgr
 
             ConnectDisconnectCommand = new DelegateCommand(ConnectDisconnectCommand_Executed);
             ExitCommand = new DelegateCommand(ExitCommand_Executed);
-
+            ShowHistoryCommand = new DelegateCommand(ShowHistoryCommand_Executed);
+            LoadHistoryCommand = new DelegateCommand(LoadHistory_Executed);
 
             if (Left == 0)
                 Left = double.NaN;
@@ -104,6 +110,20 @@ namespace dialupconnmgr
                 Top = double.NaN;
 
             InitAppIcon();
+        }
+
+        private void LoadHistory_Executed(object o)
+        {
+            if (_history == null)
+            {
+                _history = new ConnectionHistory();
+            }
+            _history.LoadHistory(HistoryStartDate, HistoryEndDate);
+        }
+
+        private void ShowHistoryCommand_Executed(object o)
+        {
+            (new ConnectionHistoryView(this)).Show();
         }
 
         #region Public Methods
@@ -720,6 +740,18 @@ namespace dialupconnmgr
                     App.DispatcherInvokeAsync(InitAppIcon);
                 }
             }
+        }
+
+        public DateTime HistoryStartDate
+        {
+            get { return _historyStartDate; }
+            set { SetProperty(ref _historyStartDate, value); }
+        }
+
+        public DateTime HistoryEndDate
+        {
+            get { return _historyEndDate; }
+            set { SetProperty(ref _historyEndDate, value); }
         }
 
         #endregion

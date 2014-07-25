@@ -28,7 +28,7 @@ namespace dialupconnmgr
         public StatisticsLogger(DateTime date, string directoryPath = null):base(directoryPath)
         {
             _path = ConstructPath(date, _directoryPath);
-            _entriesList = ReadEntries(date);
+            Task.Factory.StartNew(async () => _entriesList = await ReadEntries(date) ?? _entriesList);
         }
 
         public async Task LogDisconnection(DateTime fixationTime)

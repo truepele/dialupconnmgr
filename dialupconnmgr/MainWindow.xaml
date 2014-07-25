@@ -94,6 +94,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Resources/Images/duration.png"/>
                     <TextBlock Margin="4,0,0,0" Text="{Binding  ConnectionDuration, Converter={StaticResource TimeFormatConverter}}"/>
+                    <Button Margin="4,0,0,0" Content="..." Command="{Binding ShowHistoryCommand}"/>
                 </StackPanel>
                 
                 <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
