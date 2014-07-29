@@ -99,14 +99,6 @@ namespace dialupconnmgr
             _semaphor.Release();
         }
 
-        private void Serialize()
-        {
-            using (var writer = new XmlTextWriter(_path, Encoding.UTF8))
-            {
-                _serializer.Serialize(writer, this);
-            }
-        }
-
         protected void Init(DateTime fixationTime)
         {
             var path = ConstructPath(fixationTime, _directoryPath);
@@ -118,6 +110,14 @@ namespace dialupconnmgr
                     Directory.CreateDirectory(_directoryPath);
                 }
                 _entriesList.Clear();
+            }
+        }
+
+        private void Serialize()
+        {
+            using (XmlTextWriter writer = new XmlTextWriter(_path, UTF8Encoding.UTF8))
+            {
+                base.Serialize(writer);
             }
         }
     }

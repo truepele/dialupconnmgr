@@ -110,15 +110,18 @@ namespace dialupconnmgr
                 Top = double.NaN;
 
             InitAppIcon();
+
+            HistoryStartDate = DateTime.Now.Date;
+            HistoryEndDate = DateTime.Now.Date;
         }
 
         private void LoadHistory_Executed(object o)
         {
-            if (_history == null)
+            if (History == null)
             {
-                _history = new ConnectionHistory();
+                History = new ConnectionHistory();
             }
-            _history.LoadHistory(HistoryStartDate, HistoryEndDate);
+            History.LoadHistory(HistoryStartDate, HistoryEndDate);
         }
 
         private void ShowHistoryCommand_Executed(object o)
@@ -752,6 +755,12 @@ namespace dialupconnmgr
         {
             get { return _historyEndDate; }
             set { SetProperty(ref _historyEndDate, value); }
+        }
+
+        public ConnectionHistory History
+        {
+            get { return _history; }
+            private set { SetProperty(ref _history, value); }
         }
 
         #endregion

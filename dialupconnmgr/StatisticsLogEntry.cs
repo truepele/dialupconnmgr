@@ -117,7 +117,8 @@ namespace dialupconnmgr
                 SpeedupPointcount = e1.SpeedupPointcount + e2.SpeedupPointcount,
                 MaxDownSpeed = Math.Max(e1.MaxDownSpeed, e2.MaxDownSpeed),
                 MaxUpSpeed = Math.Max(e1.MaxUpSpeed, e2.MaxUpSpeed),
-                AggregatedCount = e1.AggregatedCount+e2.AggregatedCount
+                AggregatedCount = e1.AggregatedCount+e2.AggregatedCount,
+                UserName = e1.UserName
             };
 
             return result;

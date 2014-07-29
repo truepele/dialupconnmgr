@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -9,12 +11,12 @@ using SEAppBuilder.Common;
 
 namespace dialupconnmgr
 {
-    public class StatisticsLogBase
+    public class StatisticsLogBase : BindableBase, IXmlSerializable
     {
         protected List<StatisticsLogEntry> _entriesList = new List<StatisticsLogEntry>();
         protected static SemaphoreSlim _semaphor = new SemaphoreSlim(1, 1);//, "loggingSemaphore");
         protected string _directoryPath;
-        protected XmlSerializer _serializer;
+        private XmlSerializer _serializer;
 
         public StatisticsLogBase()
         {
@@ -22,7 +24,7 @@ namespace dialupconnmgr
 
         public StatisticsLogBase(string directoryPath = null)
         {
-            _serializer = new XmlSerializer(typeof(StatisticsLogger));
+            _serializer = new XmlSerializer(typeof(StatisticsLogBase), new XmlRootAttribute("StatisticsLog"));
             _directoryPath = !string.IsNullOrEmpty(directoryPath) ? Path.GetDirectoryName(directoryPath)
                : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
         }
@@ -41,7 +43,8 @@ namespace dialupconnmgr
                     {
                         try
                         {
-                            var origin = _serializer.Deserialize(reader) as StatisticsLogger;
+                            var origin = _serializer.Deserialize(reader) as StatisticsLogBase;
+
                             if (origin != null)
                             {
                                 entries = new List<StatisticsLogEntry>(origin.EntriesList);
@@ -60,17 +63,59 @@ namespace dialupconnmgr
             
             return entries;
         }
-
-        [XmlElement(ElementName = "Entry")]
+        
         public List<StatisticsLogEntry> EntriesList
         {
             get { return _entriesList; }
-            set { _entriesList = value; }
+            set { SetProperty(ref _entriesList, value); }
         }
 
         protected string ConstructPath(DateTime fixationTime, string directoryPath = null)
         {
             return Path.Combine(directoryPath, string.Format("log_{0}.xml", DateTime.Now.ToString("yyyy-MM-dd")));
+        }
+
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void ReadXml(XmlReader reader)
+        {
+            reader.MoveToContent();
+            if (!reader.IsEmptyElement)
+            {
+                EntriesList = new List<StatisticsLogEntry>();
+                reader.ReadStartElement();
+
+                reader.Read();
+                while (!reader.EOF && reader.Name == "Entry")
+                {
+                    var s = new XmlSerializer(typeof(StatisticsLogEntry), new XmlRootAttribute("Entry"));
+                    var e = s.Deserialize(reader) as StatisticsLogEntry;
+                    if (e != null)
+                    {
+                        EntriesList.Add(e);
+                    }
+                }
+                reader.ReadEndElement();
+            }
+        }
+
+        public virtual void WriteXml(XmlWriter writer)
+        {
+            var s = new XmlSerializer(typeof (StatisticsLogEntry), new XmlRootAttribute("Entry"));
+            writer.WriteStartElement("Entries");
+            foreach (var entry in EntriesList)
+            {
+                s.Serialize(writer, entry);
+            }
+            writer.WriteEndElement();
+        }
+
+        protected virtual void Serialize(XmlWriter writer)
+        {
+            _serializer.Serialize(writer, this);
         }
     }
 }
