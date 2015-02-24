@@ -73,6 +73,7 @@
     <Compile Include="Common\DelagateCommand.cs" />
     <Compile Include="Common\Extenssions\ColorExtenssions.cs" />
     <Compile Include="Common\Extenssions\StatisticsLogEntryExtenssion.cs" />
+    <Compile Include="Common\Extenssions\TypeExtenssions.cs" />
     <Compile Include="Common\Extenssions\XElementExtensions.cs" />
     <Compile Include="Common\ObservableCollectionEx.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
@@ -91,8 +92,10 @@
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityInvertConverter.cs" />
     <Compile Include="Converters\BuildresultToColorConverter.cs" />
+    <Compile Include="Converters\ConverterParameter.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\EmptyStringToCollapseConverter.cs" />
+    <Compile Include="Converters\EqualityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\StringequalityToBoolConverter.cs" />
     <Compile Include="Converters\StringequalityToVisibilityConverter.cs" />

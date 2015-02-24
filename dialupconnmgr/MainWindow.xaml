@@ -4,6 +4,7 @@
         xmlns:converters="clr-namespace:Converters"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:controls="clr-namespace:dialupconnmgr.Controls"
+        xmlns:dotRas="clr-namespace:DotRas;assembly=DotRas"
         Title="{Binding CurrentUsername}" 
         Height="300" Width="300"
         ResizeMode="NoResize"
@@ -65,8 +66,15 @@
                             <TextBlock Width="120" FontSize="18" FontWeight="SemiBold" Text ="Connect" Padding="15,5"  Background="Gray"
                                         Visibility="{Binding ConnectionState, Converter={StaticResource StringequalityToVisibilityInvertConverter}, ConverterParameter=Connected}"/>
 
-                            <TextBlock Width="120" FontSize="18" FontWeight="SemiBold" Text ="Disconnect" Background="OrangeRed" Padding="15,5"
-                                        Visibility="{Binding ConnectionState, Converter={StaticResource StringequalityToVisibilityConverter}, ConverterParameter=Connected}"/>
+                            <TextBlock Width="120" FontSize="18" FontWeight="SemiBold" Text ="Disconnect" Background="OrangeRed" Padding="15,5">
+                                <TextBlock.Visibility>
+                                    <Binding Path="ConnectionState" Converter="{StaticResource EqualityConverter}">
+                                        <Binding.ConverterParameter>
+                                            <converters:ConverterParameter ValueToCompare="{x:Static dotRas:RasConnectionState.Connected}" TargetValue="{x:Static Visibility.Visible}" DefaultValue="{x:Static Visibility.Collapsed}"/>
+                                        </Binding.ConverterParameter>
+                                    </Binding>
+                                </TextBlock.Visibility>
+                                </TextBlock>
                         </Grid>
                     </Button>
                     <CheckBox Margin="0,8,0,0" FontSize="13" FontWeight="SemiBold" IsChecked="{Binding IsKeepConnection}" Foreground="WhiteSmoke">

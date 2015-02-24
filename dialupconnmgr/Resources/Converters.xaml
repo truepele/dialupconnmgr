@@ -17,7 +17,9 @@
     <converters:DoubleToStringConverter x:Key="DoubleToStringConverter"></converters:DoubleToStringConverter>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
     <converters:DoubleMultiplierConverter x:Key="DoubleMultiplierConverter"></converters:DoubleMultiplierConverter>
-    
-    
+
+    <converters:EqualityConverter x:Key="EqualityConverter"></converters:EqualityConverter>
+
+
 
 </ResourceDictionary>

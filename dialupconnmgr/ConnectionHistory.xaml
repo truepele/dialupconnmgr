@@ -2,39 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dialupconnmgr="clr-namespace:dialupconnmgr"
-        Title="ConnectionHistory" Height="300" Width="300" Background="#202020">
+        Title="ConnectionHistory" Height="300" Width="300" Background="#202020"
+      >
     <Window.Resources>
-        <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type GroupItem}">
-                        <Expander x:Name="exp" IsExpanded="True"
-                          Background="White"
-                          Foreground="Black">
-                            <Expander.Header>
-                                <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Name}"/>
-                                <TextBlock Margin="3,0" Text="{Binding ItemCount}"/>
-                                <TextBlock Text="Item(s)"/>
-                                </StackPanel>
-                            </Expander.Header>
-                            <ItemsPresenter />
-                        </Expander>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        
-        <Style x:Key="DataGridStyle" TargetType="DataGrid">
-            <Style.Setters>
-                <Setter Property="AlternatingRowBackground" Value="Gray"/>
-                <Setter Property="RowBackground" Value="Transparent"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="CanUserAddRows" Value="False"/>
-                <!--<Setter Property="ColumnHeaderStyle" Value="{StaticResource HeaderStyle}"/>-->
-            </Style.Setters>
-        </Style>
+       
+
     </Window.Resources>
     
     <Grid>
@@ -50,65 +22,13 @@
         </StackPanel>
 
         <DataGrid  Grid.Row="1"
-            ItemsSource="{Binding History.GrouppedHistory}" Style="{StaticResource DataGridStyle}" AutoGenerateColumns="False">
+            ItemsSource="{Binding History.GrouppedHistory}" Style="{StaticResource MainDataGridStyle}" AutoGenerateColumns="True"
+                   ColumnHeaderStyle="{StaticResource HeaderStyle}" RowHeaderStyle="{StaticResource RowHeaderStyle}">
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <DataGrid ItemsSource="{Binding Childs}" 
-                              Style="{StaticResource DataGridStyle}"/>
+                    <DataGrid ItemsSource="{Binding Childs}"/>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
-            
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="UserName">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="dialupconnmgr:StatisticsLogEntry">
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="^"
-                                        Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter},
-                                                        RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}}"/>
-
-                                <Label Content="v"
-                                        Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityInvertConverter},
-                                                        RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}}"/>
-
-                                <TextBlock Text="{Binding Path=UserName}"  Foreground="WhiteSmoke"></TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="UserName">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="dialupconnmgr:StatisticsLogEntry">
-                            <TextBlock Text="{Binding ConnectedTime}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="UserName">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="dialupconnmgr:StatisticsLogEntry">
-                            <TextBlock Text="{Binding DisconnectTime}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="UserName">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="dialupconnmgr:StatisticsLogEntry">
-                            <TextBlock Text="{Binding ConnectionDuration}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-            <!--<DataGrid.GroupStyle>
-                <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
-                    <GroupStyle.Panel>
-                        <ItemsPanelTemplate>
-                            <DataGridRowsPresenter/>
-                        </ItemsPanelTemplate>
-                    </GroupStyle.Panel>
-                </GroupStyle>
-            </DataGrid.GroupStyle>-->
-
         </DataGrid>
 
     </Grid>

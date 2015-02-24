@@ -28,7 +28,10 @@ namespace dialupconnmgr
 
             while (startDate.Date <= endDate.Date)
             {
-                entries.AddRange(await ReadEntries(startDate.Date));
+                var dateentries = await ReadEntries(startDate.Date);
+                if (dateentries != null && dateentries.Count > 0)
+                    entries.AddRange(dateentries);
+
                 startDate = startDate.AddDays(1);
             }
 
@@ -37,7 +40,7 @@ namespace dialupconnmgr
                 EntriesList.Clear();
                 EntriesList = entries;
                 GrouppedHistory = (from e in EntriesList
-                    group e by e.UserName
+                    group e by new {e.ConnectedTime.Date, e.UserName}
                     into g
                     select g.Sum()).ToList();
 

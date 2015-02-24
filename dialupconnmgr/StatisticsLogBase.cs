@@ -72,7 +72,7 @@ namespace dialupconnmgr
 
         protected string ConstructPath(DateTime fixationTime, string directoryPath = null)
         {
-            return Path.Combine(directoryPath, string.Format("log_{0}.xml", DateTime.Now.ToString("yyyy-MM-dd")));
+            return Path.Combine(directoryPath, string.Format("log_{0}.xml", fixationTime.Date.ToString("yyyy-MM-dd")));
         }
 
         public System.Xml.Schema.XmlSchema GetSchema()
