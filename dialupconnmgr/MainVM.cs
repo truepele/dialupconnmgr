@@ -81,7 +81,7 @@ namespace dialupconnmgr
         public MainVM()
         {
             var pbk = new RasPhoneBook();
-            pbk.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.User));
+            pbk.Open(RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers));
             RasEntries =
             (from e in pbk.Entries.ToList()
              //where e.Device != null && e.Device.DeviceType == RasDeviceType.Modem
@@ -185,7 +185,7 @@ namespace dialupconnmgr
             {
                 ClearStatistic();
                 _dialer.EntryName = EntryName;
-                _dialer.PhoneBookPath = RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.User);
+                _dialer.PhoneBookPath = RasPhoneBook.GetPhoneBookPath(RasPhoneBookType.AllUsers);
 
                 _dialer.Credentials = new NetworkCredential(CurrentUsername, CurrentPassword);
                 _dialer.DialCompleted -= DialerOnDialCompleted;

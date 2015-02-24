@@ -10,11 +10,11 @@ none
 false
 TRACE
 C:\Projects\pele\dialupconnmgr\dialupconnmgr\App.xaml
-6828834778
+7-560135502
 
-381299376666
+45-153475832
 1779403566
-Controls\SignalStrengthControl.xaml;Controls\TestControl.xaml;MainWindow.xaml;Resources\Converters.xaml;Resources\DefaultTheme.xaml;YesNoMessageBox.xaml;
+ConnectionHistory.xaml;Controls\SignalStrengthControl.xaml;Controls\TestControl.xaml;MainWindow.xaml;Resources\Converters.xaml;Resources\DefaultTheme.xaml;YesNoMessageBox.xaml;
 
-False
+True
 
